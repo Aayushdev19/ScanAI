@@ -1,0 +1,3 @@
+Token created: eyJhbGciOiJIUzI1NiIsInR5cCI6Ik...
+History query OK: 0 docs
+Config OK: DB=scanai
