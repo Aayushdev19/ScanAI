@@ -1,0 +1,26 @@
+# Hide project documents
+PROJECT_REPORT.md
+DEPLOYMENT.md
+
+# Python
+backend/.venv/
+backend/__pycache__/
+*.pyc
+
+# Node
+frontend/node_modules/
+frontend/dist/
+frontend/dist-check/
+
+# Environment files
+**/.env
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
