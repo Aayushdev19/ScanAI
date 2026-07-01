@@ -10,7 +10,13 @@ class Settings(BaseSettings):
     MAX_UPLOAD_MB: int = 10
     CORS_ORIGINS: str = "http://localhost:3000,http://127.0.0.1:3000"
     LOCAL_DB_PATH: str = "local_data/scanai.json"
-
+    
+    CORS_ORIGINS: str = (
+    "http://localhost:5173,"
+    "http://localhost:3000,"
+    "http://127.0.0.1:3000,"
+    "https://scan-ai-three-ochre.vercel.app"
+)
     @property
     def cors_origins(self) -> list[str]:
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
