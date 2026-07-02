@@ -9,6 +9,7 @@ import {
   User,
   Settings,
   LogOut,
+  LogIn,
   ShieldCheck,
   ChevronRight,
 } from "lucide-react";
@@ -21,7 +22,7 @@ const navItems = [
   { title: "Analytics", href: "analytics", icon: BarChart3 },
 ];
 
-export function Sidebar({ currentPath, onNavigate, isOpen, onClose, user }) {
+export function Sidebar({ currentPath, onNavigate, isOpen, onClose, user, isAuthenticated }) {
   return (
     <aside
       className={cn(
@@ -83,7 +84,7 @@ export function Sidebar({ currentPath, onNavigate, isOpen, onClose, user }) {
 
       <div className="p-4 border-t border-zinc-100 bg-zinc-100/50 flex flex-col gap-2">
         <button
-          onClick={() => onNavigate("profile")}
+          onClick={() => onNavigate(isAuthenticated ? "profile" : "login")}
           className={cn(
             "flex w-full items-center gap-3 rounded-2xl p-2 transition-all group mb-2 border border-transparent hover:border-zinc-200 hover:shadow-sm",
             currentPath === "profile"
@@ -92,14 +93,14 @@ export function Sidebar({ currentPath, onNavigate, isOpen, onClose, user }) {
           )}
         >
           <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center text-zinc-900 font-bold text-xs shadow-sm group-hover:scale-110 transition-transform">
-            {user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) : 'U'}
+            {user?.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2) : 'G'}
           </div>
           <div className="text-left overflow-hidden">
             <p className="text-xs font-bold text-zinc-900 truncate">
-              {user?.name || 'User'}
+              {user?.name || 'Guest'}
             </p>
             <p className="text-[10px] text-zinc-400 font-medium truncate">
-              {user?.email || ''}
+              {user?.email || 'Sign in to scan'}
             </p>
           </div>
           <ChevronRight className="w-3.5 h-3.5 ml-auto text-zinc-300 group-hover:text-zinc-900 group-hover:translate-x-0.5 transition-all" />
@@ -112,11 +113,18 @@ export function Sidebar({ currentPath, onNavigate, isOpen, onClose, user }) {
           Settings
         </button> */}
         <button
-          onClick={() => onNavigate("login")}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-red-500 hover:bg-red-50 transition-colors group"
+          onClick={() => onNavigate(isAuthenticated ? "logout" : "login")}
+          className={cn(
+            "flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors group",
+            isAuthenticated ? "text-red-500 hover:bg-red-50" : "text-indigo-600 hover:bg-indigo-50"
+          )}
         >
-          <LogOut className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
-          Sign Out
+          {isAuthenticated ? (
+            <LogOut className="w-5 h-5 transition-transform group-hover:-translate-x-1" />
+          ) : (
+            <LogIn className="w-5 h-5 transition-transform group-hover:translate-x-1" />
+          )}
+          {isAuthenticated ? 'Sign Out' : 'Sign In'}
         </button>
       </div>
     </aside>

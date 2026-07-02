@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Search, Bell, User, ChevronDown, Settings, Menu, FileText, Clock, X } from 'lucide-react';
+import { Search, Bell, User, ChevronDown, Settings, Menu, FileText, Clock, X, LogIn } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -12,22 +12,26 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-export function Navbar({ onNavigate, onMenuClick, user, avatar }) {
+export function Navbar({ onNavigate, onMenuClick, user, avatar, isAuthenticated }) {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [scans, setScans] = useState([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const name = user?.name || 'User';
+  const name = user?.name || 'Guest';
   const email = user?.email || '';
   const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
 
   const loadScans = () => {
+    if (!isAuthenticated) {
+      setScans([]);
+      return;
+    }
     api.history().then(setScans).catch(() => setScans([]));
   };
 
   useEffect(() => {
     loadScans();
-  }, []);
+  }, [isAuthenticated]);
 
   const searchResults = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -183,7 +187,7 @@ export function Navbar({ onNavigate, onMenuClick, user, avatar }) {
             </Avatar>
             <div className="text-left hidden md:block">
               <p className="text-sm font-bold text-zinc-900 leading-none">{name}</p>
-              <p className="text-[10px] text-zinc-500 font-bold leading-normal uppercase tracking-[0.1em]">{user?.role || 'user'}</p>
+              <p className="text-[10px] text-zinc-500 font-bold leading-normal uppercase tracking-[0.1em]">{isAuthenticated ? (user?.role || 'user') : 'public'}</p>
             </div>
             <ChevronDown className={cn("w-4 h-4 text-zinc-400 group-hover:text-zinc-900 transition-all", isProfileOpen && "rotate-180")} />
           </button>
@@ -202,14 +206,19 @@ export function Navbar({ onNavigate, onMenuClick, user, avatar }) {
                   className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-zinc-100 overflow-hidden z-20"
                 >
                   <div className="p-5 border-b border-zinc-50 bg-zinc-50/50">
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">User Profile</p>
-                    <p className="text-sm font-bold text-zinc-900 truncate">{email}</p>
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1.5">{isAuthenticated ? 'User Profile' : 'Public View'}</p>
+                    <p className="text-sm font-bold text-zinc-900 truncate">{email || 'Sign in to use scans and OCR'}</p>
                   </div>
                   <div className="p-2">
-                    {[
-                      { label: 'My Profile', icon: User, onClick: () => onNavigate('profile') },
-                      { label: 'Settings', icon: Settings, onClick: () => onNavigate('profile') },
-                    ].map((item) => (
+                    {(isAuthenticated
+                      ? [
+                          { label: 'My Profile', icon: User, onClick: () => onNavigate('profile') },
+                          { label: 'Settings', icon: Settings, onClick: () => onNavigate('profile') },
+                        ]
+                      : [
+                          { label: 'Sign In', icon: LogIn, onClick: () => onNavigate('login') },
+                        ]
+                    ).map((item) => (
                       <button
                         key={item.label}
                         onClick={() => { item.onClick(); setIsProfileOpen(false); }}

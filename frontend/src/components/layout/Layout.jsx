@@ -3,7 +3,7 @@ import { Sidebar } from './Sidebar';
 import { Navbar } from './Navbar';
 import { motion, AnimatePresence } from 'motion/react';
 
-export function Layout({ children, currentPath, onNavigate, user, avatar }) {
+export function Layout({ children, currentPath, onNavigate, user, avatar, isAuthenticated }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   // Close sidebar on navigation (mobile)
@@ -19,6 +19,7 @@ export function Layout({ children, currentPath, onNavigate, user, avatar }) {
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
         user={user}
+        isAuthenticated={isAuthenticated}
       />
       
       {/* Mobile Overlay */}
@@ -35,7 +36,7 @@ export function Layout({ children, currentPath, onNavigate, user, avatar }) {
       </AnimatePresence>
 
       <div className="flex-1 flex flex-col min-w-0">
-        <Navbar onNavigate={onNavigate} onMenuClick={() => setIsSidebarOpen(true)} user={user} avatar={avatar} />
+        <Navbar onNavigate={onNavigate} onMenuClick={() => setIsSidebarOpen(true)} user={user} avatar={avatar} isAuthenticated={isAuthenticated} />
         <main className="flex-1 overflow-y-auto overflow-x-hidden pt-6 bg-zinc-50/10">
           <AnimatePresence mode="wait">
             <motion.div

@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Eye, EyeOff, User, ShieldCheck } from 'lucide-react';
+import { Mail, Eye, EyeOff, User, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { motion } from 'motion/react';
 import { api, saveToken } from '@/lib/api';
 
-export function Auth({ onLogin }) {
+export function Auth({ onLogin, onBack }) {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -142,6 +142,15 @@ export function Auth({ onLogin }) {
             {isLogin ? 'Sign Up here' : 'Login here'}
           </button>
         </p>
+
+        <button
+          type="button"
+          onClick={onBack}
+          className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-zinc-400 hover:text-zinc-900 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Back to dashboard
+        </button>
       </motion.div>
     </div>
   );

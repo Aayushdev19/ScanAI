@@ -7,16 +7,22 @@ import { cn } from '@/lib/utils';
 import { motion } from 'motion/react';
 import { api } from '@/lib/api';
 
-export function Dashboard({ onNavigate }) {
+export function Dashboard({ onNavigate, isAuthenticated }) {
   const [scans, setScans] = useState([]);
   const [quickUploads, setQuickUploads] = useState([]);
   const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
-    refreshScans();
-  }, []);
+    if (isAuthenticated) {
+      refreshScans();
+    } else {
+      setScans([]);
+      setQuickUploads([]);
+    }
+  }, [isAuthenticated]);
 
   const refreshScans = () => {
+    if (!isAuthenticated) return;
     api.history().then(setScans).catch(() => {});
   };
 
@@ -45,6 +51,11 @@ export function Dashboard({ onNavigate }) {
   };
 
   const addQuickFiles = async (fileList) => {
+    if (!isAuthenticated) {
+      onNavigate?.('workspace');
+      return;
+    }
+
     const files = Array.from(fileList || []);
     if (files.length === 0) return;
 

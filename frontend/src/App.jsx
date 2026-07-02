@@ -13,7 +13,9 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [isAuthenticated, setIsAuthenticated] = useState(hasToken);
   const [user, setUser] = useState(null);
+  const [pendingPage, setPendingPage] = useState(null);
   const [avatar, setAvatar] = useState(() => localStorage.getItem('scanai_avatar') || null);
+  const protectedPages = ['workspace', 'history', 'analytics', 'profile', 'settings'];
 
   // Restore user from token on page refresh
   useEffect(() => {
@@ -29,34 +31,43 @@ export default function App() {
   }, []);
 
   const handleNavigate = (page) => {
-    if (page === 'login') {
+    if (page === 'logout') {
       clearToken();
       setIsAuthenticated(false);
       setUser(null);
+      setPendingPage(null);
+      setCurrentPage('dashboard');
+      return;
+    }
+
+    if (!isAuthenticated && protectedPages.includes(page)) {
+      setPendingPage(page);
       setCurrentPage('login');
       return;
     }
+
     setCurrentPage(page);
   };
 
   const handleLogin = (userData) => {
     setIsAuthenticated(true);
     setUser(userData);
-    setCurrentPage('workspace');
+    setCurrentPage(pendingPage || 'workspace');
+    setPendingPage(null);
   };
 
-  if (!isAuthenticated) {
+  if (currentPage === 'login') {
     return (
       <TooltipProvider>
-        <Auth onLogin={handleLogin} />
+        <Auth onLogin={handleLogin} onBack={() => setCurrentPage('dashboard')} />
       </TooltipProvider>
     );
   }
 
   return (
     <TooltipProvider>
-      <Layout currentPath={currentPage} onNavigate={handleNavigate} user={user} avatar={avatar}>
-        {currentPage === 'dashboard' && <Dashboard onNavigate={handleNavigate} />}
+      <Layout currentPath={currentPage} onNavigate={handleNavigate} user={user} avatar={avatar} isAuthenticated={isAuthenticated}>
+        {currentPage === 'dashboard' && <Dashboard onNavigate={handleNavigate} isAuthenticated={isAuthenticated} />}
         {currentPage === 'workspace' && <Workspace />}
         {currentPage === 'history' && <History />}
         {currentPage === 'analytics' && <Analytics />}
