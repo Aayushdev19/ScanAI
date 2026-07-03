@@ -2,9 +2,7 @@
 
 ScanAI is an AI-powered multimodal dashboard for image authenticity verification and OCR text extraction.
 
-Full project status, remaining work, and model-training recommendations are documented in `PROJECT_REPORT.md`.
-
-Deployment steps are documented in `DEPLOYMENT.md`.
+https://scan-ai-three-ochre.vercel.app/
 
 ## Stack
 
